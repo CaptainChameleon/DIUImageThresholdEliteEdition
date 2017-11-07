@@ -1,10 +1,13 @@
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -21,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class AppFrame extends javax.swing.JFrame {
 
     private BufferedImage originalImage;
+    private String imageName;
 
     /**
      * Creates new form AppFrame
@@ -94,6 +98,7 @@ public class AppFrame extends javax.swing.JFrame {
 
         thresholdtMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         thresholdtMenuItem.setText("Apply Threshold");
+        thresholdtMenuItem.setEnabled(false);
         thresholdtMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 thresholdtMenuItemActionPerformed(evt);
@@ -122,13 +127,19 @@ public class AppFrame extends javax.swing.JFrame {
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
         if ((originalImage = getImageFromFile()) != null) {
             cleanDesktop();
-            createAndViewInternalFrame(originalImage).setOriginal(true);
+            ImageInternalFrame imageFrame = createAndViewInternalFrame(originalImage);
+            imageFrame.setOriginal(true);
+            thresholdtMenuItem.setEnabled(true);
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
 
     private void thresholdtMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thresholdtMenuItemActionPerformed
         ImageInternalFrame thresholdFrame = createAndViewInternalFrame(originalImage);
+        thresholdFrame.setClosable(false);
         ThresholdDialog thresholdDialog = new ThresholdDialog(this, thresholdFrame, false);
+        thresholdDialog.setLocation(
+                thresholdFrame.getLocation().x + thresholdDialog.getWidth(),
+                thresholdFrame.getLocation().y + 55);
         thresholdDialog.setVisible(true);
     }//GEN-LAST:event_thresholdtMenuItemActionPerformed
 
@@ -175,6 +186,10 @@ public class AppFrame extends javax.swing.JFrame {
         });
     }
 
+    protected void setThresholdtMenuItemEnabled(boolean enabled) {
+        this.thresholdtMenuItem.setEnabled(enabled);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JMenuItem exitMenuItem;
@@ -193,6 +208,7 @@ public class AppFrame extends javax.swing.JFrame {
         int open = fc.showOpenDialog(rootPane);
         if (open == JFileChooser.APPROVE_OPTION) {
             try {
+                imageName = fc.getSelectedFile().getName();
                 return ImageIO.read(fc.getSelectedFile());
             } catch (IOException ex) {
                 System.out.println("La imagen no se ha podido leer");
@@ -212,6 +228,23 @@ public class AppFrame extends javax.swing.JFrame {
         
         desktop.add(imageFrame);
         
+        imageFrame.setTitle(imageName);
+        
+        JInternalFrame[] allFrames = desktop.getAllFrames();
+        if (allFrames.length > 1) {
+            Point location = allFrames[0].getLocation();
+            if (location.y + 30 + imageFrame.getHeight() > desktop.getHeight()){
+                location.y = 0;
+            }
+            
+            if (location.x + 25 + imageFrame.getWidth() > desktop.getWidth()){
+                location.x = 0;
+            }
+                imageFrame.setLocation(
+                        location.x + 25,
+                        location.y + 30);
+        }
+        
         imageFrame.setVisible(true);
         
         return imageFrame;
@@ -220,7 +253,7 @@ public class AppFrame extends javax.swing.JFrame {
     private void exitConfirmationDialog(){
         int confirmDialog = JOptionPane.showConfirmDialog(rootPane,
                 "Really?!   D:",
-                "Salir",
+                "Exit",
                 JOptionPane.YES_NO_OPTION);
         if (confirmDialog == JOptionPane.OK_OPTION) {
             System.exit(0);

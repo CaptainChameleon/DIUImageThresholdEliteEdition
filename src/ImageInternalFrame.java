@@ -1,6 +1,9 @@
 
+import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.image.BufferedImage;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -97,6 +100,9 @@ public class ImageInternalFrame extends javax.swing.JInternalFrame {
                 case JOptionPane.CANCEL_OPTION:
                     return;
             }
+        } else if (isOriginal()) {
+            //((AppFrame) this.getParent().getParent().getParent().getParent().getParent()).setThresholdtMenuItemEnabled(false); // This is ART, poetry made code
+            ((AppFrame) this.getTopLevelAncestor()).setThresholdtMenuItemEnabled(false);
         }
         this.dispose();
     }//GEN-LAST:event_formInternalFrameClosing
@@ -109,6 +115,7 @@ public class ImageInternalFrame extends javax.swing.JInternalFrame {
 
     public void setImage(BufferedImage image) {
         this.imagePanel.setImage(image);
+        this.setMaximumSize(new Dimension(image.getWidth(), image.getHeight()));
     }
     
     public BufferedImage getImage() {

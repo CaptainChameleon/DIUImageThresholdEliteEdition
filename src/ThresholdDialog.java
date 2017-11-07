@@ -112,6 +112,7 @@ public class ThresholdDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         this.dispose();
+        imageFrame.setClosable(true);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -132,9 +133,11 @@ public class ThresholdDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void updateThreshold() {
-        int threhold = thresholdSelector.getValue();
-        imageFrame.setImage(ImageProcessor.applyThreshold(originalImage, threhold));
-        thresholdLabel.setText(threhold + "");
+        int threshold = thresholdSelector.getValue();
+        imageFrame.setImage(ImageProcessor.applyThreshold(originalImage, threshold));
+        imageFrame.setTitle(imageFrame.getTitle().split(" Threshold: ")[0] 
+                + " Threshold: " + threshold);
+        thresholdLabel.setText(threshold + "");
     }
   
 }
