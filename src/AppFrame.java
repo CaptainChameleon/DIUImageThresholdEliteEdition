@@ -137,9 +137,7 @@ public class AppFrame extends javax.swing.JFrame {
         ImageInternalFrame thresholdFrame = createAndViewInternalFrame(originalImage);
         thresholdFrame.setClosable(false);
         ThresholdDialog thresholdDialog = new ThresholdDialog(this, thresholdFrame, false);
-        thresholdDialog.setLocation(
-                thresholdFrame.getLocation().x + thresholdDialog.getWidth(),
-                thresholdFrame.getLocation().y + 55);
+        thresholdDialog.setLocationRelativeTo(null);
         thresholdDialog.setVisible(true);
     }//GEN-LAST:event_thresholdtMenuItemActionPerformed
 
